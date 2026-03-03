@@ -1,28 +1,9 @@
 import express from "express";
+import { v4 as uuidv4 } from "uuid";
 import Thread from "../models/Thread.js";
 import getAIResponse from "../utils/openai.js";
 
 const router = express.Router();
-
-/* ===============================
-   Create Test Thread (Optional)
-================================= */
-router.post("/test", async (req, res) => {
-  try {
-    const thread = new Thread({
-      threadId: "abc",
-      title: "Testing New Thread",
-      messages: []
-    });
-
-    const response = await thread.save();
-    res.json(response);
-
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to save in DB" });
-  }
-});
 
 /* ===============================
    Get All Threads
@@ -31,7 +12,6 @@ router.get("/thread", async (req, res) => {
   try {
     const threads = await Thread.find({}).sort({ updatedAt: -1 });
     res.json(threads);
-
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to fetch threads" });
@@ -52,7 +32,6 @@ router.get("/thread/:threadId", async (req, res) => {
     }
 
     res.json(thread.messages);
-
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to fetch chat" });
@@ -73,7 +52,6 @@ router.delete("/thread/:threadId", async (req, res) => {
     }
 
     res.status(200).json({ success: "Thread deleted successfully" });
-
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to delete thread" });
@@ -81,25 +59,33 @@ router.delete("/thread/:threadId", async (req, res) => {
 });
 
 /* ===============================
-   Chat Route (With Memory)
+   Chat Route (UUID + Memory)
 ================================= */
 router.post("/chat", async (req, res) => {
-  const { threadId, message } = req.body;
+  let { threadId, message } = req.body;
 
-  if (!threadId || !message) {
-    return res.status(400).json({ error: "Missing required fields" });
+  if (!message) {
+    return res.status(400).json({ error: "Message is required" });
   }
 
   try {
-    let thread = await Thread.findOne({ threadId });
+    let thread;
 
-    // If thread doesn't exist → create one
-    if (!thread) {
+    // 🔥 If no threadId → create new thread automatically
+    if (!threadId) {
+      threadId = uuidv4();
+
       thread = new Thread({
         threadId,
         title: message,
         messages: []
       });
+    } else {
+      thread = await Thread.findOne({ threadId });
+
+      if (!thread) {
+        return res.status(404).json({ error: "Thread not found" });
+      }
     }
 
     // Push user message
@@ -108,7 +94,7 @@ router.post("/chat", async (req, res) => {
       content: message
     });
 
-    // 🔥 Send full conversation to AI
+    // Controlled memory handled inside getAIResponse
     const assistantReply = await getAIResponse(thread.messages);
 
     if (!assistantReply) {
@@ -123,7 +109,10 @@ router.post("/chat", async (req, res) => {
 
     await thread.save();
 
-    res.json({ reply: assistantReply });
+    res.json({
+      threadId,
+      reply: assistantReply
+    });
 
   } catch (err) {
     console.error(err);
