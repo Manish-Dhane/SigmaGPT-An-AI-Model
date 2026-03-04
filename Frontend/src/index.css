@@ -1,0 +1,36 @@
+.authContainer{
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  background:#0f172a;
+  color:white;
+}
+
+.authContainer h1{
+  margin-bottom:20px;
+}
+
+.authContainer input{
+  width:280px;
+  padding:12px;
+  margin:8px;
+  border-radius:6px;
+  border:none;
+}
+
+.authContainer button{
+  width:280px;
+  padding:12px;
+  margin-top:10px;
+  background:#3b82f6;
+  border:none;
+  border-radius:6px;
+  color:white;
+  cursor:pointer;
+}
+
+.authContainer button:hover{
+  background:#2563eb;
+}
