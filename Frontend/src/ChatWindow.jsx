@@ -4,37 +4,55 @@ import { MyContext } from "./MyContext.jsx";
 import { useContext, useState, useEffect } from "react";
 import {ScaleLoader} from "react-spinners";
 
-function ChatWindow() {
-    const {prompt, setPrompt, reply, setReply, currThreadId, setPrevChats, setNewChat} = useContext(MyContext);
+    function ChatWindow() {
+        const {
+        prompt,
+        setPrompt,
+        reply,
+        setReply,
+        currThreadId,
+        setCurrThreadId,
+        setPrevChats,
+        setNewChat
+    } = useContext(MyContext);
     const [loading, setLoading] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
 
     const getReply = async () => {
-        setLoading(true);
-        setNewChat(false);
+    setLoading(true);
+    setNewChat(false);
 
-        console.log("message ", prompt, " threadId ", currThreadId);
-        const options = {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                message: prompt,
-                threadId: currThreadId
-            })
-        };
+    console.log("message ", prompt, " threadId ", currThreadId);
 
-        try {
-            const response = await fetch("http://localhost:8080/api/chat", options);
-            const res = await response.json();
-            console.log(res);
-            setReply(res.reply);
-        } catch(err) {
-            console.log(err);
+    const options = {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            message: prompt,
+            threadId: currThreadId
+        })
+    };
+
+    try {
+        const response = await fetch("http://localhost:8080/api/chat", options);
+        const res = await response.json();
+
+        console.log(res);
+
+        setReply(res.reply);
+
+        if(res.threadId){
+            setCurrThreadId(res.threadId);
         }
-        setLoading(false);
+
+    } catch(err) {
+        console.log(err);
     }
+
+    setLoading(false);
+};
 
     //Append new chat to prevChats
     useEffect(() => {

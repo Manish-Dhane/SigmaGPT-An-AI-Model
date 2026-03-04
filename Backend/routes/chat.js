@@ -69,44 +69,44 @@ router.post("/chat", async (req, res) => {
   }
 
   try {
-    let thread;
 
-    // 🔥 If no threadId → create new thread automatically
+    // If no threadId from frontend → generate one
     if (!threadId) {
       threadId = uuidv4();
+    }
 
+    // Try to find existing thread
+    let thread = await Thread.findOne({ threadId });
+
+    // If thread does not exist → create it
+    if (!thread) {
       thread = new Thread({
         threadId,
         title: message,
         messages: []
       });
-    } else {
-      thread = await Thread.findOne({ threadId });
-
-      if (!thread) {
-        return res.status(404).json({ error: "Thread not found" });
-      }
     }
 
-    // Push user message
+    // Add user message
     thread.messages.push({
       role: "user",
       content: message
     });
 
-    // Controlled memory handled inside getAIResponse
+    // Get AI response
     const assistantReply = await getAIResponse(thread.messages);
 
     if (!assistantReply) {
       return res.status(500).json({ error: "AI failed to respond" });
     }
 
-    // Push assistant reply
+    // Add assistant reply
     thread.messages.push({
       role: "assistant",
       content: assistantReply
     });
 
+    // Save thread
     await thread.save();
 
     res.json({
@@ -119,5 +119,4 @@ router.post("/chat", async (req, res) => {
     res.status(500).json({ error: "Something went wrong" });
   }
 });
-
 export default router;
