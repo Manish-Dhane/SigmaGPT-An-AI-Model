@@ -7,6 +7,8 @@ import authMiddleware from "../middleware/authmiddleware.js";
 const router = express.Router();
 
 
+
+
 /* ===============================
    Get All Threads (User Specific)
 ================================= */
