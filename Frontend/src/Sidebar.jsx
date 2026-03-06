@@ -30,7 +30,8 @@ function Sidebar() {
                 `${import.meta.env.VITE_API_URL}/api/thread`,
                 {
                     headers: {
-                        Authorization: `Bearer ${token}`
+                        Authorization: `Bearer ${localStorage.getItem("token")}`
+
                     }
                 }
             );
@@ -91,7 +92,7 @@ function Sidebar() {
                 `${import.meta.env.VITE_API_URL}/api/thread/${newThreadId}`,
                 {
                     headers: {
-                        Authorization: `Bearer ${token}`
+                        Authorization: `Bearer ${localStorage.getItem("token")}`
                     }
                 }
             );

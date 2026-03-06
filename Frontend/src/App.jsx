@@ -20,12 +20,12 @@ function App() {
   const [newChat, setNewChat] = useState(true);
   const [allThreads, setAllThreads] = useState([]);
 
-  const [token, setToken] = useState(null); // 🔥 state token
+  const [token, setToken] = useState(localStorage.getItem("token"));
 
-  useEffect(() => {
-    const savedToken = localStorage.getItem("token");
-    setToken(savedToken);
-  }, []);
+  // useEffect(() => {
+  //   const savedToken = localStorage.getItem("token");
+  //   setToken(savedToken);
+  // }, []);
 
   const providerValues = {
     prompt, setPrompt,

@@ -36,7 +36,7 @@ function ChatWindow() {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`   // 🔐 IMPORTANT
+                "Authorization": `Bearer ${localStorage.getItem("token")}`
             },
             body: JSON.stringify({
                 message: prompt,
