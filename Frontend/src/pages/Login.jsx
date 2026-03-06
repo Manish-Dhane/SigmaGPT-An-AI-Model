@@ -27,7 +27,7 @@ function Login() {
 
       localStorage.setItem("token",data.token);
 
-      navigate("/chat");
+      window.location.href = "/chat";
 
     }else{
 
