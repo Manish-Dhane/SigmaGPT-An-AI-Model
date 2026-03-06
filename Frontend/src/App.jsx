@@ -3,7 +3,7 @@ import Sidebar from "./Sidebar.jsx";
 import ChatWindow from "./ChatWindow.jsx";
 import { MyContext } from "./MyContext.jsx";
 
-import Login from "./pages/login.jsx";
+import Login from "./pages/Login.jsx";
 import Signup from "./pages/Signup.jsx";
 
 import { useState, useEffect } from "react";
