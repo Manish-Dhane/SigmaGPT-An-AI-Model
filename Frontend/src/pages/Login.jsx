@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-function Login() {
+function Login({ setToken }) {
 
   const navigate = useNavigate();
 
@@ -23,17 +23,16 @@ function Login() {
 
     const data = await response.json();
 
-    if(data.token){
+      if(data.token){
 
-      localStorage.setItem("token",data.token);
+        localStorage.setItem("token", data.token);
+        setToken(data.token);
 
-      window.location.href = "/chat";
+        navigate("/chat");
 
-    }else{
-
-      alert(data.error);
-
-    }
+      }else{
+        alert(data.error);
+      }
 
   }
 
