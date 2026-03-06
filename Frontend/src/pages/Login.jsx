@@ -28,7 +28,8 @@ function Login({ setToken }) {
         localStorage.setItem("token", data.token);
         setToken(data.token);
 
-        navigate("/chat");
+        window.location.href = "/chat";
+        // navigate("/chat");
 
       }else{
         alert(data.error);
