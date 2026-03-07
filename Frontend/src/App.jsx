@@ -65,13 +65,7 @@ function App() {
           />
 
           {/* DEFAULT ROUTE */}
-          <Route
-            path="/"
-            element={
-              token ? <Navigate to="/chat" /> : <Navigate to="/login" />
-            }
-          />
-
+          <Route path="/" element={<Navigate to="/login" />} />
         </Routes>
 
       </MyContext.Provider>

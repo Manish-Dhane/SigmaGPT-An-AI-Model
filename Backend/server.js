@@ -5,6 +5,10 @@ import mongoose from "mongoose";
 import chatRoutes from "./routes/chat.js";
 import authRoutes from "./routes/auth.js";
 
+import dns from "dns";
+
+dns.setServers(["1.1.1.1", "8.8.8.8"]);
+
 const app = express();
 const PORT = process.env.PORT || 8080;
 
